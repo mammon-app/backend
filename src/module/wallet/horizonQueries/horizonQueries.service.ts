@@ -60,7 +60,7 @@ export class HorizonQueriesService {
 
       const data = await response.json();
 
-      const nairaData = data.data.find((currency) => currency.symbol === "NGN");
+      const nairaData = data?.data?.find((currency) => currency.symbol === "NGN");
       if (!nairaData) throw new Error("Naira not found in CoinMarketCap data");
 
       const nairaId = nairaData.id;
@@ -586,7 +586,7 @@ export class HorizonQueriesService {
     const json = await res.json();
 
     // Extract and return the asset records from the API response
-    const records = json._embedded.records;
+    const records = json._embedded?.records;
     return { data: { records } };
   }
 

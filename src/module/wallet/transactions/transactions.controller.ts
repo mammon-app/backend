@@ -151,4 +151,24 @@ export class TransactionsController {
     // Return the HTTP response with the transaction data
     return HttpResponse.send("Transactions retrieved", response);
   }
+
+  /**
+   * Retrieves a paginated list of fiat transactions for the authenticated user.
+   *
+   * @param query - The pagination and filtering parameters for the request.
+   * @param account - The authenticated user's account details.
+   * @returns A response containing the paginated list of fiat transactions.
+   *
+   * @remarks
+   * This method interacts with the `transactionsService` to fetch fiat transactions
+   * based on the provided query parameters and the user's account information.
+   * The response is wrapped in a standardized HTTP response format.
+   */
+  @Get("/transaction/fiatTransactions")
+  @HttpCode(200)
+  @ApiOperation({ summary: "Get all fiat transactions" })
+  async getFiatTransactions(@Query() query: PaginateDto, @GetUser() account: IUser) {
+    const response = await this.transactionsService.getFiatTransactions(query, account);
+    return HttpResponse.send("Fiat transactions retrieved", response);
+  }
 }

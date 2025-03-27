@@ -14,7 +14,7 @@ export class JwtHelper {
       id: user._id, // Assuming '_id' is the user's unique identifier
     };
 
-    return sign(payload, JWT_SECRET, { expiresIn: '1hr' });
+    return sign(payload, JWT_SECRET, { expiresIn: '24hr' });
   }
 
   /**
@@ -27,7 +27,7 @@ export class JwtHelper {
     const payload: JwtPayload = {
       id: user._id, // Assuming '_id' is the user's unique identifier
     };
-    return sign(payload, JWT_REFRESH_SECRET, { expiresIn: '1hr' });
+    return sign(payload, JWT_REFRESH_SECRET, { expiresIn: '24hr' });
   }
 
   /**

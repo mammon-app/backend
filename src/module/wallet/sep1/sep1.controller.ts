@@ -1,5 +1,5 @@
 import { Controller, Get, HttpCode } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { Sep1Service } from './sep1.service';
 import { PublicGuard } from 'src/common/guards/public.guard';
 
@@ -9,6 +9,7 @@ import { PublicGuard } from 'src/common/guards/public.guard';
  * Uses PublicGuard to allow public access to these endpoints.
  */
 @Controller('sep1')
+@ApiSecurity("Api-Key")
 @ApiTags('stellar') // Swagger tag for categorizing API endpoints
 @PublicGuard() // Guard to allow public access to these endpoints
 export class Sep1Controller {

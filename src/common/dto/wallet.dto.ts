@@ -203,6 +203,10 @@ export class PaymentDTO {
   @IsNotEmpty()
   @IsString()
   assetCode: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  transactionDetails: any;
 }
 
 export class GetPathDTO {

@@ -1,10 +1,14 @@
-import { Module } from '@nestjs/common';
-import { InternalCacheModule } from '../../../internal-cache/internal-cache.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from 'src/schemas/user.schema';
-import { Sep10Service } from './sep10.service';
-import { Sep10Controller } from './sep10.controller';
-import { Sep1Service } from '../sep1/sep1.service';
+import { Module } from "@nestjs/common";
+import { InternalCacheModule } from "../../../internal-cache/internal-cache.module";
+import { MongooseModule } from "@nestjs/mongoose";
+import { User, UserSchema } from "src/schemas/user.schema";
+import { Sep10Service } from "./sep10.service";
+import { Sep10Controller } from "./sep10.controller";
+import { Sep1Service } from "../sep1/sep1.service";
+import {
+  TransactionHistory,
+  TransactionHistorySchema,
+} from "src/schemas/transaction-history.schema";
 
 /**
  * The Sep10Module is responsible for handling SEP-10 authentication related functionalities.
@@ -17,6 +21,10 @@ import { Sep1Service } from '../sep1/sep1.service';
       {
         name: User.name, // Name of the model to be used in Mongoose.
         schema: UserSchema, // Schema definition for the User model.
+      },
+      {
+        name: TransactionHistory.name,
+        schema: TransactionHistorySchema,
       },
     ]),
     InternalCacheModule, // Importing InternalCacheModule for caching functionalities.

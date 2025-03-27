@@ -21,6 +21,9 @@ import {
   APP_NAME,
   RECAPTCHA_SECRET_KEY,
   RECAPTCHA_BASE,
+  STELLAR_NETWORK,
+  HORIZON_TESTNET_URL,
+  FUNDING_TESTNET_KEY_SECRET,
 } from "src/config/env.config";
 import { ClientProxy } from "@nestjs/microservices";
 import { InternalCacheService } from "src/internal-cache/internal-cache.service";
@@ -91,8 +94,14 @@ export class AuthService {
     )
     private readonly clientNotification: ClientProxy
   ) {
-    this.server = new StellarSdk.Server(HORIZON_MAINNET_URL);
-    this.fundingKey = StellarSdk.Keypair.fromSecret(FUNDING_KEY_SECRET);
+    this.server =
+      STELLAR_NETWORK === "public"
+        ? new StellarSdk.Server(HORIZON_MAINNET_URL)
+        : new StellarSdk.Server(HORIZON_TESTNET_URL);
+    this.fundingKey =
+      STELLAR_NETWORK === "public"
+        ? StellarSdk.Keypair.fromSecret(FUNDING_KEY_SECRET)
+        : StellarSdk.Keypair.fromSecret(FUNDING_TESTNET_KEY_SECRET);
   }
 
   /**
@@ -610,8 +619,14 @@ export class AuthService {
     // Generate a random Stellar keypair
     const keypair = StellarSdk.Keypair.random();
 
-    // Fund the account associated with the public key
-    await this.fundAccount(keypair.publicKey());
+    // Check the Stellar network type and fund the account accordingly
+    if (STELLAR_NETWORK !== "public") {
+      // Use Friendbot to fund the account on the Stellar Testnet
+      await this.fundWithFriendbot(keypair.publicKey());
+    } else {
+      // Fund the account manually on the Stellar Public Network
+      await this.fundAccount(keypair.publicKey());
+    }
 
     if (user.stellarPublicKey)
       throw new BadRequestException("You already have a wallet.");
@@ -654,6 +669,22 @@ export class AuthService {
   }
 
   /**
+   * Fund a Stellar Testnet account using Friendbot
+   * @param {string} publicKey - The public key of the account to be funded
+   * @returns {Promise<void>}
+   */
+  async fundWithFriendbot(publicKey: string): Promise<any> {
+    const response = await fetch(
+      `https://friendbot.stellar.org?addr=${publicKey}`
+    );
+    if (!response.ok) {
+      throw new Error(`Error funding account: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data;
+  }
+
+  /**
    * Funds a Stellar account by creating a transaction to add starting balance to the account.
    *
    * This method loads the funding account associated with the funding key's public key using the Stellar SDK server.
@@ -675,7 +706,10 @@ export class AuthService {
       // Create a transaction to fund the account with starting balance
       const transaction = await new StellarSdk.TransactionBuilder(account, {
         fee,
-        networkPassphrase: StellarSdk.Networks.PUBLIC,
+        networkPassphrase:
+          STELLAR_NETWORK === "public"
+            ? StellarSdk.Networks.PUBLIC
+            : StellarSdk.Networks.TESTNET,
       })
         .addOperation(
           StellarSdk.Operation.createAccount({

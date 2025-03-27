@@ -291,3 +291,9 @@ export const RECAPTCHA_SECRET_KEY = env
 export const RECAPTCHA_BASE = env
   .get('RECAPTCHA_BASE')
   .asString();
+export const FUNDING_TESTNET_KEY_SECRET = env
+  .get('FUNDING_TESTNET_KEY_SECRET')
+  .asString();
+export const FUNDING_KEY_TESTNET = env
+  .get('FUNDING_KEY_TESTNET')
+  .asString();

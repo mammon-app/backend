@@ -10,6 +10,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from "@nestjs/common";
 import { IUser } from "src/common/interfaces/user.interface";
 import StellarSdk from "@stellar/stellar-sdk";
@@ -18,6 +19,7 @@ import {
   EMAIL_USERNAME,
   FEE,
   HORIZON_MAINNET_URL,
+  HORIZON_TESTNET_URL,
   STELLAR_NETWORK,
   STELLAR_PUBLIC_SERVER,
   STELLAR_TESTNET_SERVER,
@@ -34,6 +36,10 @@ import {
   NODE_ENV,
   PRODUCTION_RABBITMQ_NOTIFICATION,
 } from "src/config/env.config";
+import { InjectModel } from "@nestjs/mongoose";
+import { TransactionHistory } from "src/schemas/transaction-history.schema";
+import { Model, Types } from "mongoose";
+import { IServiceResponse } from "src/common/interfaces/service.interface";
 
 @Injectable()
 export class TransactionsService {
@@ -43,6 +49,8 @@ export class TransactionsService {
    * Constructs a new instance of the TransactionsService.
    */
   constructor(
+    @InjectModel(TransactionHistory.name)
+    private readonly transactionHistoryModel: Model<TransactionHistory>,
     @Inject(
       NODE_ENV === "development"
         ? DEV_RABBITMQ_NOTIFICATION
@@ -60,8 +68,6 @@ export class TransactionsService {
     );
   }
 
-  
-
   /**
    * Changes the trustline for a given asset on the user's Stellar account.
    * @param payload - The ChangeTrustLineDTO object containing asset code and other details.
@@ -78,7 +84,6 @@ export class TransactionsService {
         : TESTNET_ASSETS[payload.assetCode].issuer
     );
 
-
     // Extract the hashed password from the account object.
     const hashedPassword = account.password;
 
@@ -89,13 +94,10 @@ export class TransactionsService {
       `${account.primaryEmail}${hashedPassword}${account.pinCode}`
     );
 
-
     // Fetch the source account details from the Stellar network using the user's public key.
     const sourceAccount = await this.server.getAccount(
       account.stellarPublicKey
     );
-
-
 
     // Construct a transaction to change the trustline for the specified asset.
     const transaction = await new StellarSdk.TransactionBuilder(sourceAccount, {
@@ -114,7 +116,7 @@ export class TransactionsService {
       .setTimeout(TIMEOUT) // Set the transaction timeout.
       .build(); // Build the transaction.
 
-
+    console.log({ transaction });
 
     // Sign the transaction using the user's decrypted private key.
     const signedTransaction = await WalletHelper.execTranst(
@@ -190,8 +192,9 @@ export class TransactionsService {
       transaction,
       StellarSdk.Keypair.fromSecret(decryptedPrivateKey)
     );
-    if (!signedTransaction.status)
+    if (!signedTransaction.status) {
       throw new BadRequestException(signedTransaction.msg);
+    }
 
     // Return the transaction details, network passphrase, and signed transaction.
     return {
@@ -285,13 +288,19 @@ export class TransactionsService {
       hour12: true,
     });
 
+    await this.transactionHistoryModel.create({
+      user: new Types.ObjectId(account._id),
+      transactionDetail: payload.transactionDetails,
+      txHash: resp.hash,
+    });
+
     this.clientNotification.emit("send:withdrawal:email", {
       to: account.primaryEmail,
       subject: `New Withdrawal Confirmation`,
       appName: APP_NAME,
       username: account.username,
       amount: payload.amount,
-      currency: payload.assetCode,
+      currency: payload.assetCode === "NATIVE" ? "XLM" : payload.assetCode,
       userAddress: account.stellarPublicKey,
       receiverAddress: payload.address,
       txHash: resp.hash,
@@ -639,7 +648,11 @@ export class TransactionsService {
     try {
       // Fetch transactions for the given Stellar account from the Horizon server
       const response = await fetch(
-        `${HORIZON_MAINNET_URL}/accounts/${account.stellarPublicKey}/transactions`
+        `${
+          STELLAR_NETWORK === "public"
+            ? HORIZON_MAINNET_URL
+            : HORIZON_TESTNET_URL
+        }/accounts/${account.stellarPublicKey}/transactions`
       );
 
       // Check if the response is successful, otherwise throw an exception
@@ -652,7 +665,9 @@ export class TransactionsService {
       const transactions = data._embedded.records;
 
       // Initialize the Stellar SDK server
-      const server = new Server(HORIZON_MAINNET_URL);
+      const server = new Server(
+        STELLAR_NETWORK === "public" ? HORIZON_MAINNET_URL : HORIZON_TESTNET_URL
+      );
       const allOperations = [];
 
       // Iterate through each transaction to fetch its operations
@@ -674,5 +689,34 @@ export class TransactionsService {
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
+  }
+
+  /**
+   * Retrieves a paginated list of fiat transactions for a specific user account.
+   *
+   * @param query - An object containing pagination details such as the current page and the limit of items per page.
+   * @param account - The user account object containing the user's unique identifier.
+   * @returns A promise that resolves to an IServiceResponse containing the paginated list of fiat transactions.
+   *
+   * @remarks
+   * - Transactions are sorted in descending order by their creation date (`createdAt`).
+   * - The `skip` value is calculated based on the current page and the limit per page to determine the starting point for pagination.
+   * - The `lean()` method is used to return plain JavaScript objects instead of Mongoose documents.
+   */
+  async getFiatTransactions(
+    query: PaginateDto,
+    account: IUser
+  ): Promise<IServiceResponse> {
+    const skip = (query.currentPage - 1) * query.limitPerPage;
+    const fiatTransactions = await this.transactionHistoryModel
+      .find({ user: new Types.ObjectId(account._id) })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(query.limitPerPage)
+      .lean();
+
+    return {
+      data: fiatTransactions,
+    };
   }
 }

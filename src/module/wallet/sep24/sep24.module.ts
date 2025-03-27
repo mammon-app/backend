@@ -16,6 +16,10 @@ import {
 } from "src/config/env.config";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { Sep10Service } from "../sep10/sep10.service";
+import {
+  TransactionHistory,
+  TransactionHistorySchema,
+} from "src/schemas/transaction-history.schema";
 
 /**
  * The Sep24Module is responsible for handling SEP-24 related operations.
@@ -28,6 +32,10 @@ import { Sep10Service } from "../sep10/sep10.service";
       {
         name: User.name,
         schema: UserSchema,
+      },
+      {
+        name: TransactionHistory.name,
+        schema: TransactionHistorySchema,
       },
     ]),
     // Import the internal cache module for caching purposes

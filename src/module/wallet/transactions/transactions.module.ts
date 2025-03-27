@@ -14,6 +14,7 @@ import {
 } from 'src/config/env.config';
 import { TransactionsService } from './transactions.service';
 import { TransactionsController } from './transactions.controller';
+import { TransactionHistory, TransactionHistorySchema } from 'src/schemas/transaction-history.schema';
 
 /**
  * TransactionsModule is responsible for setting up and configuring the transaction-related
@@ -28,6 +29,10 @@ import { TransactionsController } from './transactions.controller';
       {
         name: User.name,
         schema: UserSchema,
+      },
+      {
+        name: TransactionHistory.name,
+        schema: TransactionHistorySchema,
       },
     ]),
     // Register RabbitMQ client based on environment configuration for notifications

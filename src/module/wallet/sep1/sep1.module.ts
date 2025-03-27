@@ -1,9 +1,13 @@
-import { Module } from '@nestjs/common';
-import { InternalCacheModule } from '../../../internal-cache/internal-cache.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from 'src/schemas/user.schema';
-import { Sep1Service } from './sep1.service';
-import { Sep1Controller } from './sep1.controller';
+import { Module } from "@nestjs/common";
+import { InternalCacheModule } from "../../../internal-cache/internal-cache.module";
+import { MongooseModule } from "@nestjs/mongoose";
+import { User, UserSchema } from "src/schemas/user.schema";
+import { Sep1Service } from "./sep1.service";
+import { Sep1Controller } from "./sep1.controller";
+import {
+  TransactionHistory,
+  TransactionHistorySchema,
+} from "src/schemas/transaction-history.schema";
 
 /**
  * Module responsible for SEP-1 related functionality in the application.
@@ -16,6 +20,10 @@ import { Sep1Controller } from './sep1.controller';
       {
         name: User.name,
         schema: UserSchema,
+      },
+      {
+        name: TransactionHistory.name,
+        schema: TransactionHistorySchema,
       },
     ]),
     // Importing InternalCacheModule for handling internal caching requirements
