@@ -1,6 +1,5 @@
-```markdown
 # Mammon App Backend
-![alt text](image.png)
+![alt text](mammonapp.png)
 
 ## Overview
 
@@ -221,4 +220,3 @@ using **Docker** for containerization. Continuous integration and deployment (CI
 
 The **Mammon App** is designed to create financial inclusion by leveraging the power of blockchain to simplify cross-border payments. 
 The application ensures secure, fast, and cost-effective transactions, bridging the gap between fiat currencies and cryptocurrencies.
-``` 
