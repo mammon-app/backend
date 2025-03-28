@@ -17,9 +17,7 @@ export class TransactionMessageEventsService {
     const originalMsg = context.getMessage();
     try {
       const smtp = nodemailer.createTransport({
-        host: EMAIL_HOST,
-        secure: true,
-        port: EMAIL_PORT,
+        service: EMAIL_HOST,
         auth: {
           user: EMAIL_USERNAME,
           pass: EMAIL_PASSWORD,
