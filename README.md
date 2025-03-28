@@ -1,22 +1,88 @@
+```markdown
 # Mammon App Backend
 
 ## Overview
 
-The **Mammon App Backend** is a robust financial system built on Stellar Blockchain using **NestJS**, with **MongoDB** as its database. It incorporates **RabbitMQ** for message queuing, **Redis** for caching, **AES-256-CBC** and **CryptoJS** for encryption, and **Nodemailer** for email notifications. The backend also supports **Swagger** for API documentation, **Stellar** for blockchain transactions, and **Cloudinary** for image storage.
+The **Mammon App Backend** is a robust financial system built on **Stellar Blockchain** using **NestJS**, with **MongoDB** as its database. 
+It incorporates **RabbitMQ** for message queuing, **Redis** for caching, **AES-256-CBC** and **CryptoJS** for encryption, 
+and **Nodemailer** for email notifications. The backend also supports **Swagger** for API documentation, **Soroban Stellar** for blockchain transactions, 
+and **Cloudinary** for image storage. Our team has built this system to address the need for secure, decentralized financial services, 
+supporting both fiat and crypto transactions for cross-border payment.
 
-## Technologies Used
+## Problem Statement
 
-- **NestJS** – Backend framework
-- **MongoDB** – NoSQL database
-- **RabbitMQ** – Message broker
-- **Redis** – Caching layer
-- **AES-256-CBC & CryptoJS** – Data encryption
-- **Nodemailer** – Email service
-- **Swagger** – API documentation
-- **Stellar** – Blockchain transactions
-- **Cloudinary** – Image storage
+Despite the growing adoption of **cryptocurrencies** for cross-border payments, converting **crypto to fiat and vice versa** remains one of 
+the **biggest bottlenecks** in Nigeria and across West Africa. While sending crypto is **instant and low-cost**, the challenge lies 
+in **accessing local currency**, as most businesses and individuals still rely on fiat for everyday transactions.  
 
-## Getting Started
+### **The Current Struggle: P2P and Informal Channels**  
+
+Without **seamless fiat on-ramps and off-ramps**, users are **forced to rely on risky, inefficient methods** to exchange crypto for their local currency:  
+
+- **Peer-to-Peer (P2P) Trading**: Many users have to **search for individuals** willing to exchange their crypto for cash, often through **social media groups** 
+or informal marketplaces. This method is **slow**, prone to **scams**, and offers **unfavorable exchange rates**.  
+- **Physical Brokers & Black Market Dealers**: Some people rely on **local currency exchangers** in physical locations. These middlemen **inflate rates**, 
+charge **hidden fees**, and are **not always reliable**.  
+- **Limited and Unreliable Crypto-Fiat Gateways**: Most traditional banks and payment providers **do not support crypto**, making it difficult to deposit 
+or withdraw funds **directly** from a regulated platform. Even where services exist, **withdrawals are often delayed** and subject to **sudden restrictions**.  
+- **Regulatory Uncertainty**: Crypto regulations in Nigeria and West Africa are **inconsistent**, with periodic **banking bans and government crackdowns**, 
+making it even harder to access fiat liquidity.  
+
+These challenges **restrict financial inclusion**, making it difficult for businesses and individuals to **fully leverage cryptocurrency for real-world payments and international transactions**.  
+
+
+## **How Stellar Blockchain Solves This Problem**  
+
+The **Stellar Blockchain** provides a **reliable, low-cost, and decentralized** solution for **seamless crypto-to-fiat and fiat-to-crypto transactions**. 
+By leveraging Stellar’s **anchor network** and **decentralized exchange (SDEX)**, Mammon enables users to:  
+
+✅ **Instantly swap crypto for fiat without needing middlemen.**  
+✅ **Access stable exchange rates with transparent pricing.**  
+✅ **Deposit and withdraw fiat directly from integrated financial partners.**  
+✅ **Eliminate the risks of P2P trading and unreliable brokers.**  
+✅ **Enjoy low-cost transactions with real-time settlement.**  
+
+With **Mammon’s integration of Stellar**, users will no longer have to **struggle to find P2P traders, negotiate black market rates, or worry about liquidity issues**. 
+Instead, they will have **direct access to a seamless, borderless financial system** that **bridges crypto and fiat efficiently**.  
+
+Our **backend architecture** ensures **secure wallet management, fast transaction processing, and regulatory compliance**, making cross-border payments truly accessible to everyone.  
+
+
+## Technical Architecture and Implementation Details
+
+Our backend is built using a **microservices** architecture with a focus on modularity and scalability. 
+The system integrates various technologies to ensure high availability and security:
+
+- **NestJS**: Used for building the backend API with high performance and scalability in mind.
+- **MongoDB**: A NoSQL database used to store user and transaction data, ensuring high performance and flexibility.
+- **RabbitMQ**: Message broker for communication between microservices, enabling asynchronous processing of tasks such as notifications.
+- **Redis**: Used as a caching layer to speed up frequently accessed data and improve overall performance.
+- **AES-256-CBC & CryptoJS**: Employed to securely encrypt sensitive data like user passwords and private keys.
+- **Nodemailer**: Sends email notifications for important actions like successful transactions or account activity.
+- **Stellar Blockchain**: For performing decentralized financial transactions, including sending and receiving cryptocurrency.
+- **Cloudinary**: Provides image storage and retrieval functionality for user profile pictures and other media assets.
+
+The backend communicates with the **Stellar** blockchain for transaction processing and employs **JWT-based authentication** to secure user data and access.
+
+## Justification for Technical Decisions and Approaches Taken
+
+- **Stellar Blockchain**: We chose Stellar due to its low-cost, fast transaction processing, and high scalability, making it an ideal choice for cross-border payments.
+- **NestJS**: Chosen for its modular design, scalability, and strong support for TypeScript, which ensures maintainable and type-safe code.
+- **MongoDB**: Provides flexibility in handling complex, unstructured data, while supporting horizontal scalability to meet growing user demands.
+- **AES-256-CBC**: This encryption standard is widely regarded as one of the most secure encryption algorithms, ensuring that sensitive user data, like passwords, remains protected.
+- **Redis**: Implemented for caching frequently accessed data to reduce response times and enhance the overall performance of the application.
+- **RabbitMQ**: A message broker that allows us to process background tasks like notifications asynchronously, improving scalability and responsiveness.
+
+The overall architecture is designed for modularity, with different services (e.g., authentication, transactions, notifications) operating independently, allowing for better maintenance and scalability.
+
+## Team's Experience with Development on Stellar
+
+Our team has extensive experience developing blockchain applications, particularly on the **Stellar Network**. 
+We have successfully integrated Stellar’s distributed ledger technology to facilitate secure, fast, and low-cost transactions. 
+We have worked with the **Stellar SDK** and **Soroban Stellar** to handle wallet management, transaction signing, and interaction with Stellar’s public and test networks. 
+We have also built decentralized applications (dApps) and smart contracts to automate processes and ensure the integrity of financial transactions.
+
+## Deployment and Testing Instructions
 
 ### Prerequisites
 
@@ -39,8 +105,10 @@ Ensure you have the following installed on your machine:
    npm install
    ```
 3. **Set Up Environment Variables:**
-   - Create a `.env` file in the root directory.
-   - Add the necessary environment variables (database connection, API keys, and configurations). Below is the list of environment variables that should be added to your `.env` file.
+   - Create a `.env` file in the root directory if you have none.
+   - Add the necessary environment variables (database connection, API keys, and configurations). 
+   
+Below is the list of environment variables that should be added to your `.env` file.
 
 ### Environment Variables
 
@@ -129,55 +197,6 @@ http://localhost:{PORT}/api/mammonapp/docs
 
 Replace `{PORT}` with the actual port number defined in your `.env` file.
 
-## Features & Endpoints
-
-### 1. **User Authentication & Account Management**
-
-- **Register a new user**
-- **Login with credentials**
-- **Password encryption using AES-256-CBC**
-- **JWT-based authentication**
-
-### 2. **Wallet Management**
-
-- **Create a Stellar-based wallet**
-- **Generate & manage wallet keys securely**
-- **View wallet balance**
-
-### 3. **Deposit & Withdraw Funds**
-
-- **Deposit funds into the wallet**
-- **Withdraw funds from the wallet to a bank or external wallet**
-- **Transaction fee calculations**
-
-### 4. **Transaction History**
-
-- **Retrieve transaction logs**
-- **Filter transactions based on date, type, and status**
-
-### 5. **Fiat & Crypto Transactions**
-
-- **Convert fiat to crypto and vice versa**
-- **Perform swaps between supported assets**
-- **Monitor live exchange rates**
-
-### 6. **Messaging & Notifications**
-
-- **RabbitMQ for event-driven notifications**
-- **Email alerts for transactions via Nodemailer**
-- **Real-time updates with Redis caching**
-
-### 7. **Image Storage**
-
-- **Upload and manage images using Cloudinary**
-- **Secure storage and retrieval of user profile pictures**
-
-### 8. **Decentralized Finance (DeFi) for Cross-Border Payments**
-
-- **Built on Stellar Network for efficient, low-cost cross-border transactions**
-- **Currently supports both **Testnet** and **Public Network**, but users should keep it on **Public Network** for real transactions**
-- **Designed for global remittances and decentralized finance (DeFi) applications**
-
 ## Security Measures
 
 - **Encryption:** All sensitive data is encrypted using **AES-256-CBC**.
@@ -185,19 +204,20 @@ Replace `{PORT}` with the actual port number defined in your `.env` file.
 - **Role-based Access Control:** Different user roles with permission restrictions.
 - **Rate Limiting & DDOS Protection:** Prevents abuse and ensures stability.
 
-## Contribution Guidelines
+## Deployment and Testing
 
-If you wish to contribute:
+We deployed the backend on a **Linux server**
 
-1. Fork the repository
-2. Create a new branch (`feature-branch`)
-3. Commit changes and push to your fork
-4. Submit a pull request for review
+using **Docker** for containerization. Continuous integration and deployment (CI/CD) were set up with **GitHub Actions** to automatically build, test, and deploy changes.
 
-## License
+## Future Plans
 
-This project is licensed under [MIT License](LICENSE).
+- Expand cross-border payment capabilities with additional blockchain networks.
+- Implement decentralized finance (DeFi) protocols for improved financial services.
+- Enhance user interface (UI) for a more intuitive experience.
 
-## Contact
+### Concluding Remarks
 
-For inquiries or support, contact **devcharlezen@gmail.com** or visit our official website **https://mammonapp.com**.
+The **Mammon App** is designed to create financial inclusion by leveraging the power of blockchain to simplify cross-border payments. 
+The application ensures secure, fast, and cost-effective transactions, bridging the gap between fiat currencies and cryptocurrencies.
+``` 
