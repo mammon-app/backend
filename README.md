@@ -200,4 +200,4 @@ This project is licensed under [MIT License](LICENSE).
 
 ## Contact
 
-For inquiries or support, contact **devcharlezen@gmail.com** or visit our official website **http://mammonapp.com**.
+For inquiries or support, contact **devcharlezen@gmail.com** or visit our official website **https://mammonapp.com**.
